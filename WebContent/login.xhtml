@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>LOGIN</title>
+	<h:outputStylesheet library="css" name="bootstrap.min.css" />
+</h:head>
+
+<h:body>
+
+	<h:form id="formLogin">
+
+		<div class="form-row">
+			<div class="col">
+				<h:inputText value="#{pessoaBean.pessoa.login}"
+					styleClass="form-control" label="Login" />
+			</div>
+			<div class="col">
+				<h:inputSecret value="#{pessoaBean.pessoa.senha}"
+					styleClass="form-control" label="Senha" />
+			</div>
+			<div class="col">
+				<h:commandButton value="Logar"
+					styleClass="form-control btn btn-primary btn-sm"
+					action="#{pessoaBean.logar}" />
+			</div>
+		</div>
+
+	</h:form>
+</h:body>
+</html>

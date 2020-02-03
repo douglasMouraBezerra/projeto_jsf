@@ -1,0 +1,233 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	template="/WEB-INF/templates/layout.xhtml">
+
+	<ui:define name="content">
+		<h:form id="formPessoa" style="width:70%; margin:250px;">
+			<div class="card">
+
+				<div class="card-header">
+					<h5 class="card-title">Cadastro de usuarios</h5>
+				</div>
+
+				<div class="card-body">
+					<h:messages />
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="id" value="Id" />
+						</div>
+						<div class="col-1">
+							<h:inputText value="#{pessoaBean.pessoa.idpessoa}" id="id"
+								readonly="true" styleClass="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="nome" value="Nome" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.nome}" id="nome"
+								styleClass="form-control" required="true"
+								requiredMessage="Nome obrigatorio"
+								validatorMessage="Nome tem que no minimo duas letras">
+								<f:validateLength minimum="2" maximum="50" />
+							</h:inputText>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="sobrenome" value="Sobrenome" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.sobrenome}"
+								id="sobrenome" styleClass="form-control" required="true"
+								requiredMessage="Sobrenome obrigatorio" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="datanascimento" value="Data de Nascimento" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.dataNascimento}"
+								id="datanascimento" styleClass="form-control" required="true"
+								requiredMessage="Informe a data"
+								converterMessage="Data em formato invalido" label="xx/xx/xxxx">
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
+									timeZone="GMT-03:00" />
+							</h:inputText>
+						</div>
+					</div>
+
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="sexo" value="Sexo" />
+						</div>
+						<div class="col-4">
+							<h:selectOneMenu value="#{pessoaBean.pessoa.sexo}"
+								styleClass="form-control" id="sexo" required="true"
+								requiredMessage="Informe o sexo">
+								<f:selectItem itemLabel="--[Selecione]--" />
+								<f:selectItem itemLabel="Masculino" itemValue="MASCULINO" />
+								<f:selectItem itemLabel="Feminino" itemValue="FEMININO" />
+							</h:selectOneMenu>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="frameworks" value="Frameworks" />
+						</div>
+						<div class="col-4">
+							<h:selectManyMenu value="#{pessoaBean.pessoa.frameworks}"
+								styleClass="form-control" style="height:150px;" id="frameworks">
+								<f:selectItem itemValue="Hibernate" />
+								<f:selectItem itemValue="Jsf" />
+								<f:selectItem itemValue="Spring Data JPA" />
+								<f:selectItem itemValue="Spring Framework" />
+								<f:selectItem itemValue="Spring Boot" />
+								<f:selectItem itemValue="Angular" />
+								<f:selectItem itemValue="Java" />
+								<f:selectItem itemValue="Oracle" />
+								<f:selectItem itemValue="MySql" />
+								<f:selectItem itemValue="SQL" />
+							</h:selectManyMenu>
+						</div>
+					</div>
+
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="cep" value="Cep" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.cep}" id="cep"
+								styleClass="form-control" validatorMessage="Cep invalido">
+								<f:validateLength minimum="8" maximum="8" />
+								<f:ajax event="blur" execute="@this"
+									listener="#{pessoaBean.pesquisaCep}" />
+							</h:inputText>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="ativo" value="Ativo" />
+						</div>
+						<div class="col-4">
+							<h:selectBooleanCheckbox value="#{pessoaBean.pessoa.ativo}"
+								id="ativo" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="login" value="Login" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.login}" id="login"
+								styleClass="form-control" required="true"
+								requiredMessage="Informe o login" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="senha" value="Senha" />
+						</div>
+						<div class="col-4">
+							<h:inputSecret value="#{pessoaBean.pessoa.senha}" id="senha"
+								styleClass="form-control" required="true"
+								requiredMessage="Informe a senha" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel />
+						</div>
+						<div class="col-7">
+							<h:commandButton value="Salvar" action="#{pessoaBean.salvar}"
+								styleClass="btn btn-primary btn-sm" />
+
+							<h:commandButton value="Novo" action="#{pessoaBean.novo}"
+								styleClass="btn btn-primary btn-sm" style="margin-left:5px;">
+								<f:ajax render="@form" resetValues="true" />
+							</h:commandButton>
+
+							<!-- limpando form com jsf 2.2 -->
+							<!-- Uso de novos namespaces -->
+							<h:commandButton value="Limpar" action="#{pessoaBean.limpar}"
+								styleClass="btn btn-primary btn-sm" style="margin-left:5px;">
+								<f:ajax render="@form" resetValues="true" />
+							</h:commandButton>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</h:form>
+
+
+		<h:form id="formDataTable">
+			<h:dataTable value="#{pessoaBean.pessoas}" var="pessoa"
+				styleClass="table table-hover">
+				<h:column>
+					<f:facet name="header">
+					Id
+				</f:facet>
+					<h:outputText value="#{pessoa.idpessoa}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+					Nome
+				</f:facet>
+					<h:outputText value="#{pessoa.nome}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+					Sobrenome
+				</f:facet>
+					<h:outputText value="#{pessoa.sobrenome}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+				Data de Nascimento
+				</f:facet>
+					<h:outputText value="#{pessoa.dataNascimento}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+					Editar
+				</f:facet>
+					<h:commandLink action="#{pessoaBean.editar}">
+						<f:setPropertyActionListener value="#{pessoa}"
+							target="#{pessoaBean.pessoa}" />
+						<h:graphicImage library="img" name="editar.png" />
+					</h:commandLink>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
+					Remover
+				</f:facet>
+					<h:commandLink action="#{pessoaBean.remover}">
+						<f:setPropertyActionListener value="#{pessoa}"
+							target="#{pessoaBean.pessoa}" />
+						<h:graphicImage library="img" name="excluir.png" />
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

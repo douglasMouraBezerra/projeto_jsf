@@ -1,0 +1,116 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/WEB-INF/templates/layout.xhtml">
+
+
+
+	<ui:define name="content">
+			<h:form id="formLancamento">
+			<div class="card" style="width: 70%; margin-left: 15%;">
+				<div class="card-header">
+					<h5 class="card-title">Cadastro de Lancamentos</h5>
+				</div>
+				<div class="card-body">
+					<div class="form-group row">
+						<div class="col-sm-2">
+							<h:outputLabel for="idlancamento" value="ID" />
+						</div>
+						<div class="col-sm-1">
+							<h:inputText value="#{lancamentoBean.lancamento.idLancamento}"
+								id="idlancamento" styleClass="form-control" readonly="true" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-2">
+							<h:outputLabel for="numeroNotaFiscal" value="Nota Fiscal" />
+						</div>
+						<div class="col-sm-4">
+							<h:inputText
+								value="#{lancamentoBean.lancamento.numeroNotaFiscal}"
+								id="numeroNotaFiscal" styleClass="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-2">
+							<h:outputLabel for="empresaOrigem" value="Empresa Origem" />
+						</div>
+						<div class="col-sm-4">
+							<h:inputText value="#{lancamentoBean.lancamento.empresaOrigem}"
+								id="empresaOrigem" styleClass="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-2">
+							<h:outputLabel for="empresaDestino" value="Empresa Destino" />
+						</div>
+						<div class="col-sm-4">
+							<h:inputText value="#{lancamentoBean.lancamento.empresaDestino}"
+								id="empresaDestino" styleClass="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-2">
+							<h:outputLabel />
+						</div>
+						<div class="col-sm-4">
+							<h:commandButton value="Salvar" action="#{lancamentoBean.salvar}"
+								styleClass="btn btn-primary btn-sm" />
+							<h:commandButton value="Novo" action="#{lancamentoBean.novo}"
+								styleClass="btn btn-primary btn-sm" style="margin-left:5px;" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<br />
+		<br />
+
+		<h:form>
+			<h:dataTable value="#{lancamentoBean.lancamentos}" var="lancamento"
+				styleClass="table table-hover">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:outputText value="#{lancamento.idLancamento}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Nota Fiscal</f:facet>
+					<h:outputText value="#{lancamento.numeroNotaFiscal}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Empresa Origem</f:facet>
+					<h:outputText value="#{lancamento.empresaOrigem}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Empresa Destino</f:facet>
+					<h:outputText value="#{lancamento.empresaDestino}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Editar</f:facet>
+					<h:commandLink action="#{lancamentoBean.editar}">
+						<h:graphicImage library="img" name="editar.png" />
+						<f:setPropertyActionListener value="#{lancamento}"
+							target="#{lancamentoBean.lancamento}" />
+					</h:commandLink>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Remover</f:facet>
+					<h:commandLink action="#{lancamentoBean.remover}">
+						<h:graphicImage library="img" name="excluir.png" />
+						<f:setPropertyActionListener value="#{lancamento}"
+							target="#{lancamentoBean.lancamento}" />
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
