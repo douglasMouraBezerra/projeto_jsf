@@ -13,9 +13,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.entidades.enums.Nivel;
 import br.com.entidades.enums.Sexo;
@@ -42,6 +44,14 @@ public class Pessoa implements Serializable {
 	// manymenu
 	private String[] frameworks;
 
+	// criando objeto estado transient para auxiliar na prog
+	// nao sera gravado no banco
+	@Transient
+	private Estados estados;
+
+	@ManyToOne
+	private Cidades cidades;
+
 	// booleancheckbox
 	private Boolean ativo;
 	private String login;
@@ -56,6 +66,27 @@ public class Pessoa implements Serializable {
 	private List<Lancamento> lancamentos;
 
 	private String cep;
+	private String logradouro;
+	private String complemento;
+	private String bairro;
+	private String localidade;
+	private String uf;
+
+	public Cidades getCidades() {
+		return cidades;
+	}
+
+	public void setCidades(Cidades cidades) {
+		this.cidades = cidades;
+	}
+
+	public Estados getEstados() {
+		return estados;
+	}
+
+	public void setEstados(Estados estados) {
+		this.estados = estados;
+	}
 
 	public void setCep(String cep) {
 		this.cep = cep;
@@ -63,6 +94,46 @@ public class Pessoa implements Serializable {
 
 	public String getCep() {
 		return this.cep;
+	}
+
+	public String getLogradouro() {
+		return logradouro;
+	}
+
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+
+	public String getComplemento() {
+		return complemento;
+	}
+
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
+
+	public String getLocalidade() {
+		return localidade;
+	}
+
+	public void setLocalidade(String localidade) {
+		this.localidade = localidade;
+	}
+
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
 	}
 
 	public List<Lancamento> getLancamentos() {

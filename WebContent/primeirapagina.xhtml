@@ -1,6 +1,7 @@
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	template="/WEB-INF/templates/layout.xhtml">
 
 	<ui:define name="content">
@@ -31,7 +32,8 @@
 							<h:inputText value="#{pessoaBean.pessoa.nome}" id="nome"
 								styleClass="form-control" required="true"
 								requiredMessage="Nome obrigatorio"
-								validatorMessage="Nome tem que no minimo duas letras">
+								validatorMessage="Nome tem que no minimo duas letras"
+								pt:placeholder="Informe seu nome">
 								<f:validateLength minimum="2" maximum="50" />
 							</h:inputText>
 						</div>
@@ -44,6 +46,7 @@
 						<div class="col-4">
 							<h:inputText value="#{pessoaBean.pessoa.sobrenome}"
 								id="sobrenome" styleClass="form-control" required="true"
+								pt:placeholder="Informe seu sobrenome"
 								requiredMessage="Sobrenome obrigatorio" />
 						</div>
 					</div>
@@ -56,7 +59,8 @@
 							<h:inputText value="#{pessoaBean.pessoa.dataNascimento}"
 								id="datanascimento" styleClass="form-control" required="true"
 								requiredMessage="Informe a data"
-								converterMessage="Data em formato invalido" label="xx/xx/xxxx">
+								converterMessage="Data em formato invalido" label="xx/xx/xxxx"
+								pt:placeholder="dd/mm/yyyy">
 								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
 									timeZone="GMT-03:00" />
 							</h:inputText>
@@ -101,17 +105,110 @@
 					</div>
 
 
+					<!-- Combobox sendo carregado -->
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="estado" value="Estado" />
+						</div>
+						<div class="col-4">
+							<h:selectOneMenu id="estado" value="#{pessoaBean.pessoa.estados}"
+								styleClass="form-control" immediate="true">
+								<f:selectItem itemLabel="--[Selecione]--"
+									noSelectionOption="true" />
+								<f:selectItems value="#{pessoaBean.estados}" />
+								<f:ajax event="change" execute="@this"
+									listener="#{pessoaBean.carregaCidades}" render="comboCidade" />
+							</h:selectOneMenu>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="cidades" value="Cidades" />
+						</div>
+						<div class="col-4">
+							<h:selectOneMenu id="comboCidade"
+								value="#{pessoaBean.pessoa.cidades}" styleClass="form-control">
+								<f:selectItem itemLabel="--[Selecione]--"
+									noSelectionOption="true" />
+								<f:selectItems value="#{pessoaBean.cidades}" />
+							</h:selectOneMenu>
+						</div>
+					</div>
+
 					<div class="form-group row">
 						<div class="col-3">
 							<h:outputLabel for="cep" value="Cep" />
 						</div>
 						<div class="col-4">
 							<h:inputText value="#{pessoaBean.pessoa.cep}" id="cep"
-								styleClass="form-control" validatorMessage="Cep invalido">
-								<f:validateLength minimum="8" maximum="8" />
+								pt:placeholder="00000000" styleClass="form-control"
+								validatorMessage="Cep invalido">
+								<f:validateLength minimum="8" maximum="9" />
 								<f:ajax event="blur" execute="@this"
-									listener="#{pessoaBean.pesquisaCep}" />
+									listener="#{pessoaBean.pesquisaCep}"
+									render="logradouro complemento bairro localidade uf" />
 							</h:inputText>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="logradouro" value="Logradouro" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.logradouro}"
+								id="logradouro" name="logradouro" styleClass="form-control">
+								<f:passThroughAttribute name="placeholder"
+									value="Informe sua rua" />
+							</h:inputText>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="complemento" value="Complemento" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.complemento}"
+								id="complemento" name="complemento" styleClass="form-control">
+								<f:passThroughAttribute name="placeholder"
+									value="Informe o complemento caso tenha" />
+							</h:inputText>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="bairro" value="Bairro" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.bairro}" id="bairro"
+								name="bairro" styleClass="form-control">
+								<!-- usando o placeoholder do core -->
+								<f:passThroughAttribute name="placeholder"
+									value="Informe o bairro" />
+							</h:inputText>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="localidade" value="Localidade" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.localidade}"
+								id="localidade" name="localidade" styleClass="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="uf" value="Uf" />
+						</div>
+						<div class="col-4">
+							<h:inputText value="#{pessoaBean.pessoa.uf}" id="uf" name="uf"
+								styleClass="form-control" />
 						</div>
 					</div>
 

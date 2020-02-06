@@ -8,8 +8,8 @@
 					value="Administracao" outcome="administracao.xhtml" /></li>
 			<li class="nav-item"><h:link styleClass="nav-link"
 					value="Lancamentos" outcome="lancamentos.xhtml" /></li>
-			<li class="nav-item"><h:link styleClass="nav-link"
-					value="Log Out" outcome="login.xhtml" /></li>
+			<li class="nav-item"><h:commandLink styleClass="nav-link"
+					value="Log Out" action="#{pessoaBean.deslogar}" /></li>
 		</ul>
 	</h:form>
 

@@ -36,4 +36,10 @@ public class TesteJPA {
 		System.out.println(pessoa.toString());
 	}
 
+	@Test
+	public void initTesteTamStringBuilder() {
+		String retorno = "\"cep\": \"53431-070\",  \"logradouro\": \"Rua Marrocos\",  \"complemento\": \"\",  \"bairro\": \"Pau Amarelo\",  \"localidade\": \"Paulista\",  \"uf\": \"PE\",  \"unidade\": \"\",  \"ibge\": \"2610707\",  \"gia\": \"\"";
+		System.out.println(retorno.length());
+	}
+
 }
