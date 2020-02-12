@@ -18,7 +18,7 @@
 						<div class="col-3">
 							<h:outputLabel for="id" value="Id" />
 						</div>
-						<div class="col-1">
+						<div class="col-2">
 							<h:inputText value="#{pessoaBean.pessoa.idpessoa}" id="id"
 								readonly="true" styleClass="form-control" />
 						</div>
@@ -112,7 +112,8 @@
 						</div>
 						<div class="col-4">
 							<h:selectOneMenu id="estado" value="#{pessoaBean.pessoa.estados}"
-								styleClass="form-control" immediate="true">
+								styleClass="form-control" immediate="true"
+								converter="estadoConverter">
 								<f:selectItem itemLabel="--[Selecione]--"
 									noSelectionOption="true" />
 								<f:selectItems value="#{pessoaBean.estados}" />
@@ -124,11 +125,12 @@
 
 					<div class="form-group row">
 						<div class="col-3">
-							<h:outputLabel for="cidades" value="Cidades" />
+							<h:outputLabel for="comboCidade" value="Cidades" />
 						</div>
 						<div class="col-4">
 							<h:selectOneMenu id="comboCidade"
-								value="#{pessoaBean.pessoa.cidades}" styleClass="form-control">
+								value="#{pessoaBean.pessoa.cidades}" styleClass="form-control"
+								converter="cidadesConverter">
 								<f:selectItem itemLabel="--[Selecione]--"
 									noSelectionOption="true" />
 								<f:selectItems value="#{pessoaBean.cidades}" />

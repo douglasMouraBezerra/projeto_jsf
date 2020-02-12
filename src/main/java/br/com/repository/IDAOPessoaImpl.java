@@ -38,7 +38,7 @@ public class IDAOPessoaImpl implements IDAOPessoa {
 		if (carregaEstados != null) {
 			// pega cada estado e passa pra uma lista de selectItem
 			for (Estados estados : carregaEstados) {
-				items.add(new SelectItem(estados.getId(), estados.getNome()));
+				items.add(new SelectItem(estados, estados.getNome()));
 			}
 		}
 

@@ -74,7 +74,7 @@ public class Cidades implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Cidades [id=" + id + ", nome=" + nome + ", estados=" + estados.getNome() + "]";
+		return getId().toString();
 	}
 
 }

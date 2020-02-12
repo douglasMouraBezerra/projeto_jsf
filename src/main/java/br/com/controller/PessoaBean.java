@@ -12,10 +12,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.Gson;
@@ -60,10 +62,27 @@ public class PessoaBean implements Serializable {
 		return "";
 	}
 
-	public String editar() {
-		pessoa = daoGeneric.recuperaEntidadeById(pessoa);
-		listarTudo();
-		return "";
+	@SuppressWarnings("unchecked")
+	public void editar() {
+		// carregando estados que estão no objeto cidades
+		if (pessoa.getCidades() != null) {
+			Estados estado = pessoa.getCidades().getEstados();
+			pessoa.setEstados(estado);
+
+			// carregando as cidades deste estado
+			List<Cidades> cidades = JPAUtil.getEntityManager()
+					.createQuery("from Cidades where estados_id = " + estado.getId()).getResultList();
+
+			// percorre e adiciona a lista de selecItems
+			List<SelectItem> selectItems = new ArrayList<SelectItem>();
+
+			for (Cidades cidade : cidades) {
+				selectItems.add(new SelectItem(cidade, cidade.getNome()));
+			}
+
+			// selectItem de cidades
+			this.setCidades(selectItems);
+		}
 	}
 
 	public String remover() {
@@ -204,29 +223,26 @@ public class PessoaBean implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public void carregaCidades(AjaxBehaviorEvent event) {
-		String codEstado = (String) event.getComponent().getAttributes().get("submittedValue");
+		Estados estado = (Estados) ((HtmlSelectOneMenu) event.getSource()).getValue();
 
-		if (codEstado != null) {
-			Estados estado = JPAUtil.getEntityManager().find(Estados.class, Long.parseLong(codEstado));
-			if (estado != null) {
-				pessoa.setEstados(estado);
+		if (estado != null) {
+			pessoa.setEstados(estado);
 
-				List<Cidades> cidades = JPAUtil.getEntityManager()
-						.createQuery("FROM Cidades WHERE estados.id= " + codEstado).getResultList();
+			List<Cidades> cidades = JPAUtil.getEntityManager()
+					.createQuery("FROM Cidades WHERE estados.id= " + estado.getId()).getResultList();
 
-				List<SelectItem> selectItems = new ArrayList<SelectItem>();
+			List<SelectItem> selectItems = new ArrayList<SelectItem>();
 
-				for (Cidades c : cidades) {
-					selectItems.add(new SelectItem(c.getId(), c.getNome()));
-				}
-
-				// depois de add cidades
-				setCidades(selectItems);
+			for (Cidades c : cidades) {
+				selectItems.add(new SelectItem(c, c.getNome()));
 			}
+
+			// depois de add cidades
+			setCidades(selectItems);
 		}
 	}
 
-	//metodo carrega as cidades de acordo com as cidades
+	// metodo carrega as cidades de acordo com as cidades
 	public List<SelectItem> getCidades() {
 		return cidades;
 	}
