@@ -1,6 +1,11 @@
 package br.com.controller;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -8,6 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -17,8 +23,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
-import javax.persistence.TypedQuery;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import javax.xml.bind.DatatypeConverter;
 
 import com.google.gson.Gson;
 
@@ -43,11 +52,47 @@ public class PessoaBean implements Serializable {
 	private List<Pessoa> pessoas = new ArrayList<Pessoa>();
 	private IDAOPessoa idaoPessoa = new IDAOPessoaImpl();
 
-	public String salvar() {
+	// objeto para trazer o arquivo que foi feito upload
+	private Part imagem;
+
+	public String salvar() throws IOException {
+
+		/* PROCESSANDO IMAGEM */
+		byte[] imagembyte = getByte(imagem.getInputStream());
+		pessoa.setFotoOriginalBase64(imagembyte);
+
+		/* TRANSFORMANDO IMAGEM EM MINIATURA */
+		BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagembyte));
+
+		/* PEGANDO TIPO DE IMAGEM */
+		int type = bufferedImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
+		int largura = 200; // em px
+		int altura = 200;
+
+		/* CRIANDO A MINIATURA */
+		BufferedImage redimensonandoImagem = new BufferedImage(largura, altura, type);
+		Graphics2D g = redimensonandoImagem.createGraphics();
+		g.drawImage(bufferedImage, 0, 0, largura, altura, null);
+		g.dispose();
+
+		/* ESCREVER NOVAMENTE A IMAGEM EM TAMANHO MENOR */
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		String extensao = imagem.getContentType().split("\\/")[1];
+		ImageIO.write(redimensonandoImagem, extensao, byteArrayOutputStream);
+
+		String miniImagem = "data:" + imagem.getContentType() + ";base64,"
+				+ DatatypeConverter.printBase64Binary(byteArrayOutputStream.toByteArray());
+
+		/* SETANDO A IMAGEM REDUZIDA, EM PESSOA */
+		pessoa.setFotoIconBase64(miniImagem);
+		pessoa.setExtensao(extensao);
+
+		/* FLUXO NORMAL DE SALVAMENTO */
 		pessoa = daoGeneric.salvarERetornar(pessoa);
 		novo();
 		listarTudo();
-		BeanUtil.showMessage("Salvo com sucesso");
+		BeanUtil.showMessage("Cadastro efetuado com sucesso !");
+
 		return "";
 	}
 
@@ -249,6 +294,61 @@ public class PessoaBean implements Serializable {
 
 	public void setCidades(List<SelectItem> cidades) {
 		this.cidades = cidades;
+	}
+
+	public Part getImagem() {
+		return imagem;
+	}
+
+	public void setImagem(Part imagem) {
+		this.imagem = imagem;
+	}
+
+	// criacao de metodo helper para fazer o tratamento da imagem vinda da tela
+	// método converte o inputstream em um array de bytes.
+	private byte[] getByte(InputStream inputStream) throws IOException {
+		int len;
+		int size = 1024;
+		byte[] buffer = null;
+
+		if (inputStream instanceof ByteArrayInputStream) {
+			size = inputStream.available();
+			buffer = new byte[size];
+			len = inputStream.read(buffer, 0, size);
+		} else {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			buffer = new byte[size];
+
+			while ((len = inputStream.read(buffer, 0, size)) != -1) {
+				byteArrayOutputStream.write(buffer, 0, len);
+			}
+
+			buffer = byteArrayOutputStream.toByteArray();
+		}
+
+		return buffer;
+	}
+
+	public void download() throws IOException {
+		/* PEGANDO OS VALORES DOS PARAMETROS ENVIADOS */
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+		String fileDownloadId = params.get("fileDownloadId");
+
+		Pessoa pessoa = daoGeneric.consultar(Pessoa.class, Long.parseLong(fileDownloadId));
+
+		/* DANDO RESPOSTA PARA TELA::ENVIO DA IMAGEM */
+		HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext()
+				.getResponse();
+
+		response.addHeader("Content-Disposition", "attachment;filename=download." + pessoa.getExtensao());
+		response.setContentType("application/octet-stream");
+		response.setContentLength(pessoa.getFotoOriginalBase64().length);
+		response.getOutputStream().write(pessoa.getFotoOriginalBase64());
+		response.getOutputStream().flush();
+
+		/* INFORMANDO AO JSF QUE A RESPOSTA ESTÁ COMPLETA. */
+		FacesContext.getCurrentInstance().responseComplete();
 	}
 
 }

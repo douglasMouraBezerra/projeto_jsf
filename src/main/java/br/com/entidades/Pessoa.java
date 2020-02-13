@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -71,6 +74,38 @@ public class Pessoa implements Serializable {
 	private String bairro;
 	private String localidade;
 	private String uf;
+
+	@Column(columnDefinition = "text")
+	private String fotoIconBase64;
+	private String extensao;
+
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] fotoOriginalBase64;
+
+	public String getFotoIconBase64() {
+		return fotoIconBase64;
+	}
+
+	public void setFotoIconBase64(String fotoIconBase64) {
+		this.fotoIconBase64 = fotoIconBase64;
+	}
+
+	public String getExtensao() {
+		return extensao;
+	}
+
+	public void setExtensao(String extensao) {
+		this.extensao = extensao;
+	}
+
+	public byte[] getFotoOriginalBase64() {
+		return fotoOriginalBase64;
+	}
+
+	public void setFotoOriginalBase64(byte[] fotoOriginalBase64) {
+		this.fotoOriginalBase64 = fotoOriginalBase64;
+	}
 
 	public Cidades getCidades() {
 		return cidades;
@@ -283,8 +318,12 @@ public class Pessoa implements Serializable {
 	public String toString() {
 		return "Pessoa [idpessoa=" + idpessoa + ", nome=" + nome + ", sobrenome=" + sobrenome + ", idade=" + idade
 				+ ", sexo=" + sexo + ", dataNascimento=" + dataNascimento + ", frameworks="
-				+ Arrays.toString(frameworks) + ", ativo=" + ativo + ", login=" + login + ", senha=" + senha
-				+ ", perfilUsuario=" + perfilUsuario + ", lancamentos=" + lancamentos + "]";
+				+ Arrays.toString(frameworks) + ", estados=" + estados + ", cidades=" + cidades + ", ativo=" + ativo
+				+ ", login=" + login + ", senha=" + senha + ", perfilUsuario=" + perfilUsuario + ", nivel=" + nivel
+				+ ", lancamentos=" + lancamentos + ", cep=" + cep + ", logradouro=" + logradouro + ", complemento="
+				+ complemento + ", bairro=" + bairro + ", localidade=" + localidade + ", uf=" + uf + ", fotoIconBase64="
+				+ fotoIconBase64 + ", extensao=" + extensao + ", fotoOriginalBase64="
+				+ Arrays.toString(fotoOriginalBase64) + "]";
 	}
 
 }

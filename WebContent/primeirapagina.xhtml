@@ -5,7 +5,8 @@
 	template="/WEB-INF/templates/layout.xhtml">
 
 	<ui:define name="content">
-		<h:form id="formPessoa" style="width:70%; margin:250px;">
+		<h:form id="formPessoa" style="width:70%; margin:250px;"
+			enctype="multipart/form-data">
 			<div class="card">
 
 				<div class="card-header">
@@ -21,6 +22,19 @@
 						<div class="col-2">
 							<h:inputText value="#{pessoaBean.pessoa.idpessoa}" id="id"
 								readonly="true" styleClass="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-3">
+							<h:outputLabel for="foto" value="Imagem" />
+						</div>
+						<div class="col-4">
+							<h:inputFile id="foto" value="#{pessoaBean.imagem}"
+								styleClass="form-control">
+								<f:passThroughAttribute name="placeholder"
+									value="Selecione um arquivo" />
+							</h:inputFile>
 						</div>
 					</div>
 
@@ -267,11 +281,9 @@
 							</h:commandButton>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</h:form>
-
 
 		<h:form id="formDataTable">
 			<h:dataTable value="#{pessoaBean.pessoas}" var="pessoa"
@@ -306,6 +318,17 @@
 
 				<h:column>
 					<f:facet name="header">
+						Imagem
+					</f:facet>
+					<h:commandLink actionListener="#{pessoaBean.download}">
+						<h:graphicImage width="60" height="60"
+							value="#{pessoa.fotoIconBase64}" />
+						<f:param name="fileDownloadId" value="#{pessoa.idpessoa}" />
+					</h:commandLink>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">
 					Editar
 				</f:facet>
 					<h:commandLink action="#{pessoaBean.editar}">
@@ -328,5 +351,4 @@
 			</h:dataTable>
 		</h:form>
 	</ui:define>
-
 </ui:composition>
